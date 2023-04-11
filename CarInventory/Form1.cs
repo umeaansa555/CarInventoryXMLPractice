@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace CarInventory
 {
@@ -107,6 +108,8 @@ namespace CarInventory
 
         private void exitButton_Click(object sender, EventArgs e)
         {
+
+            saveInventory();
             Application.Exit();
         }
 
@@ -123,6 +126,28 @@ namespace CarInventory
             //inventory = inventory.OrderBy(a => a.make).ThenByDescending(a => a.year).ToList();
 
             displayItems();
+        }
+
+        private void saveInventory()
+        {
+            XmlWriter writer = XmlWriter.Create("Resources/save.xml", null); 
+            writer.WriteStartElement("Cars");
+
+            foreach (Car c in inventory)
+            {
+                writer.WriteStartElement("Car");
+
+                writer.WriteElementString("year", c.year);
+                writer.WriteElementString("make", c.make);
+                writer.WriteElementString("colour", c.colour);
+                writer.WriteElementString("mileage", c.mileage);
+
+                writer.WriteEndElement();
+            }
+
+
+            writer.WriteEndElement();
+            writer.Close();
         }
     }
 }
